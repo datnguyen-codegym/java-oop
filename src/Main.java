@@ -1,4 +1,4 @@
-import java.sql.SQLOutput;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public class Main {
 
-    // tạo một ứng dụng bán điện thoại
+    // tạo một ứng dụng bán điện thoại | laptop
     public static void main(String[] args) {
         // ** các tính năng chính của ứng dụng
         // tìm kiếm sản phẩm
@@ -48,7 +48,7 @@ public class Main {
 
         System.out.println("Welcome");
 
-        String commandList =        """
+        String commandList = """
                         Vui lòng lựa chọn dịch vụ:
                         1. Xem danh sách sản phẩm
                         2. Xem chi tiết sản phẩm
