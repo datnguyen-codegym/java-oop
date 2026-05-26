@@ -42,6 +42,8 @@ public class Main {
 
         List<PhoneItem> phoneItems = List.of(item1, item2, item3, item4, item5);
 
+        Seller phoneSeller = new Seller(phoneItems);
+
         LaptopType macbookProM1 = new LaptopType(LaptopBranch.MACBOOK, "PRO M1", "BASE", 32000000L);
         LaptopType asusPro = new LaptopType(LaptopBranch.ASUS, "ASUS PRO", "BASE", 40000000L);
 
@@ -53,9 +55,12 @@ public class Main {
 
         List<LaptopItem> laptopItems = List.of(laptopItem1, laptopItem2, laptopItem3, laptopItem4);
 
-        // init store
-        Store.setPhoneItems(phoneItems);
-        Store.setLaptopItems(laptopItems);
+        Seller laptopSeller = new Seller(laptopItems);
+//        // init store
+//        Store.setPhoneItems(phoneItems);
+//        Store.setLaptopItems(laptopItems);
+
+
 
         // list phoneItems
 
@@ -67,77 +72,72 @@ public class Main {
 
         System.out.println("Welcome");
 
+        String firstSentence = """
+                Bạn muốn mua gì:
+                        1. Điện thoại
+                        2. Laptop
+                        3. Thoát
+                        4. Xem danh sách sản phẩm
+                        5. Xem chi tiết sản phẩm
+                        6. Mua sản phẩm laptop
+                """;
+
         String commandList = """
                         Vui lòng lựa chọn dịch vụ:
-                        1. Xem danh sách sản phẩm điện thoại
-                        2. Xem danh sách sản phẩm laptop
-                        3. Xem chi tiết sản phẩm điện thoại
-                        4. Xem chi tiết sản phẩm laptop
-                        5. Mua sản phẩm điện thoại
+                        4. Xem danh sách sản phẩm
+                        5. Xem chi tiết sản phẩm
                         6. Mua sản phẩm laptop
-                        7. Thoát
                         """
         ;
 
         String returnCommandList = "Nhấn phím 0 để quay lại màn hình chính";
         Scanner customerInput = new Scanner(System.in);
 
+        Seller seller = null;
         while (true) {
-            System.out.println(commandList);
+            System.out.println(firstSentence);
             int command = customerInput.nextInt();
+
             switch (command) {
-                case 1:
-                    System.out.println(Store.listsPhoneType());
-
-                    do {
-                        System.out.println(returnCommandList);
-                        command = customerInput.nextInt();
-                        if (command == 0) break;
-                    } while (command != 0);
-
-                    continue;
-                case 2:
-                    System.out.println(Store.listsLaptopType());
-                    do {
-                        System.out.println(returnCommandList);
-                        command = customerInput.nextInt();
-                        if (command == 0) break;
-                    } while (command != 0);
-
-                    continue;
-                case 3: {
-                    System.out.println("Lựa chọn mẫu điện thoại quan tâm hoặc 0 để quay về màn hình chính");
-                    System.out.println(Store.listsPhoneType());
-                    int phoneType = customerInput.nextInt();
-                    if (0 == phoneType) {
-                        continue;
-                    }
-                    System.out.println(Store.phoneTypeDetail(phoneType - 1));
-
-                    do {
-                        System.out.println(returnCommandList);
-                        command = customerInput.nextInt();
-                        if (command == 0) break;
-                    } while (command != 0);
+                case 1: {
+                    seller = phoneSeller;
                     continue;
                 }
+                case 2: {
+                    seller = laptopSeller;
+                    continue;
+                }
+                case 3:
+                {
+                    System.exit(0);
+                }
                 case 4: {
-                    System.out.println("Lựa chọn mẫu laptop quan tâm hoặc 0 để quay về màn hình chính");
-                    System.out.println(Store.listsLaptopType());
-                    int phoneType = customerInput.nextInt();
-                    if (0 == phoneType) {
-                        continue;
-                    }
-                    System.out.println(Store.laptopTypeDetail(phoneType - 1));
-
+                    System.out.println(seller.listItemType());
                     do {
                         System.out.println(returnCommandList);
                         command = customerInput.nextInt();
                         if (command == 0) break;
                     } while (command != 0);
+
                     continue;
                 }
                 case 5: {
+                    System.out.println("Lựa chọn mẫu sản phẩm quan tâm hoặc 0 để quay về màn hình chính");
+                    System.out.println(seller.listItemType());
+                    int phoneType = customerInput.nextInt();
+                    if (0 == phoneType) {
+                        continue;
+                    }
+                    System.out.println(seller.getItemType(phoneType - 1));
+
+                    do {
+                        System.out.println(returnCommandList);
+                        command = customerInput.nextInt();
+                        if (command == 0) break;
+                    } while (command != 0);
+                    continue;
+                }
+                case 6: {
                     customerInput.nextLine();
                     System.out.println("Vui lòng nhập tên KH hoặc 0 để quay về màn hình chính");
                     String customerName = customerInput.nextLine();
@@ -146,14 +146,14 @@ public class Main {
                     }
                     Customer customer = new Customer(UUID.randomUUID().toString(), customerName);
                     System.out.println("Lựa chọn mẫu điện thoại muốn mua hoặc 0 để quay về màn hình chính");
-                    System.out.println(Store.listsPhoneType());
+                    System.out.println(seller.listItemType());
 
                     int phoneTypeIndex = customerInput.nextInt();
                     if (phoneTypeIndex == 0) {
                         continue;
                     }
 
-                    PhoneItem phoneItem = Store.getItem(phoneTypeIndex - 1);
+                    Item phoneItem = seller.getItem(phoneTypeIndex - 1);
 
                     Order order = new Order();
                     order.setCustomerCode(customer.getCustomerCode());
@@ -174,47 +174,6 @@ public class Main {
                     } while (command != 0);
                     continue;
                 }
-
-                case 6:
-                    customerInput.nextLine();
-                    System.out.println("Vui lòng nhập tên KH hoặc 0 để quay về màn hình chính");
-                    String customerName = customerInput.nextLine();
-                    if ("0".equals(customerName)) {
-                        continue;
-                    }
-                    Customer customer = new Customer(UUID.randomUUID().toString(), customerName);
-                    System.out.println("Lựa chọn mẫu điện thoại muốn mua hoặc 0 để quay về màn hình chính");
-                    System.out.println(Store.listsPhoneType());
-
-                    int phoneTypeIndex = customerInput.nextInt();
-                    if (phoneTypeIndex == 0) {
-                        continue;
-                    }
-
-                    PhoneItem phoneItem = Store.getItem(phoneTypeIndex - 1);
-
-                    Order order = new Order();
-                    order.setCustomerCode(customer.getCustomerCode());
-                    order.setOrderCode(UUID.randomUUID().toString());
-                    order.setOrderPrice(phoneItem.getType().getPrice());
-                    order.setPhoneItemCode(phoneItem.getItemCode());
-                    order.setDate(new Date().toString());
-
-                    phoneItem.setSaleStatus(SaleStatus.SOLD);
-                    Store.getOrders().add(order);
-                    Store.getCustomers().add(customer);
-                    Store.setRevenue(Store.getRevenue() + order.getOrderPrice());
-
-                    do {
-                        System.out.println(returnCommandList);
-                        command = customerInput.nextInt();
-                        if (command == 0) break;
-                    } while (command != 0);
-                    continue;
-
-                case 7:
-                    System.out.println("Xin cảm ơn và hẹn gặp lại");
-                    System.exit(0);
                 default:
                     System.out.println("Dịch vụ chưa được hỗ trợ, vui lòng lựa chọn lại");
             }
