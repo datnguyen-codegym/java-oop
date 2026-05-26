@@ -1,3 +1,5 @@
+package store;
+
 public class Customer {
     private String customerCode;
     private String customerName;
